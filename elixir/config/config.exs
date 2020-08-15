@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure your application as:
 #
-#     config :scrapper, key: :value
+#     config :scraper, key: :value
 #
 # and access this configuration in your application as:
 #
-#     Application.get_env(:scrapper, :key)
+#     Application.get_env(:scraper, :key)
 #
 # You can also configure a third-party app:
 #

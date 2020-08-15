@@ -1,4 +1,4 @@
-defmodule Scrapper.Router do
+defmodule Scraper.Router do
   use Plug.Router
   use Plug.Debugger
   require Logger

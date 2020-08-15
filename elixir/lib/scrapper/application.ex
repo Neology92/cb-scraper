@@ -1,4 +1,4 @@
-defmodule Scrapper.Application do
+defmodule Scraper.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -10,16 +10,16 @@ defmodule Scrapper.Application do
     children = [
       Plug.Cowboy.child_spec(
         scheme: :http,
-        plug: Scrapper.Router,
+        plug: Scraper.Router,
         options: [port: 8085]
       )
-      # Starts a worker by calling: Scrapper.Worker.start_link(arg)
-      # {Scrapper.Worker, arg}
+      # Starts a worker by calling: Scraper.Worker.start_link(arg)
+      # {Scraper.Worker, arg}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Scrapper.Supervisor]
+    opts = [strategy: :one_for_one, name: Scraper.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
