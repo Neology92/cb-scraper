@@ -13,7 +13,8 @@ defmodule Scraper.Application do
         plug: Scraper.Router,
         options: [port: 8085]
       ),
-      Scraper.Repo
+      Scraper.Repo,
+      Scraper.Worker
       # Starts a worker by calling: Scraper.Worker.start_link(arg)
       # {Scraper.Worker, arg}
     ]
