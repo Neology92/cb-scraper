@@ -11,9 +11,13 @@ defmodule Scraper do
   end
 
   def get_cams_paths_from(path) do
-    case HTTPoison.get(@base_url <> path) do
+    url = @base_url <> path
+    IO.puts("Getting urls from: " <> url)
+
+    case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body
+        |> Floki.parse_document!()
         |> Floki.find("#room_list > li")
         |> Floki.find(".details > .title > a")
         |> Floki.attribute("href")
@@ -27,7 +31,10 @@ defmodule Scraper do
   end
 
   def get_external_links_from(path) do
-    case HTTPoison.get(@base_url <> path) do
+    url = @base_url <> path
+    IO.puts("Getting contact info from: " <> url)
+
+    case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body
         |> Floki.parse_document!()

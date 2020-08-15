@@ -12,7 +12,8 @@ defmodule Scraper.Application do
         scheme: :http,
         plug: Scraper.Router,
         options: [port: 8085]
-      )
+      ),
+      Scraper.Repo
       # Starts a worker by calling: Scraper.Worker.start_link(arg)
       # {Scraper.Worker, arg}
     ]
