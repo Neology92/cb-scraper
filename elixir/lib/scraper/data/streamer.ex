@@ -1,5 +1,6 @@
-defmodule Scraper.Streamer do
+defmodule Scraper.Data.Streamer do
   use Ecto.Schema
+  import Ecto.Changeset
 
   schema "streamers" do
     field :category, :string
@@ -12,7 +13,8 @@ defmodule Scraper.Streamer do
 
   def changeset(streamer, params \\ %{}) do
     streamer
-    |> Ecto.Changeset.cast(params, [:category, :path, :twitter, :instagram, :onlyfans, :misc])
-    |> Ecto.Changeset.validate_required([:category, :path])
+    |> cast(params, [:category, :path, :twitter, :instagram, :onlyfans, :misc])
+    |> validate_required([:category, :path])
+    |> unique_constraint(:path)
   end
 end

@@ -1,1 +1,2 @@
-import Scraper
+alias Scraper.Data
+alias Scraper.Repo
