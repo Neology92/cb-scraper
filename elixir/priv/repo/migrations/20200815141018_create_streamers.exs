@@ -9,6 +9,8 @@ defmodule Scraper.Repo.Migrations.CreateStreamers do
       add :instagram, :string
       add :onlyfans, :string
       add :misc, :string
+
+      timestamps()
     end
 
     create(unique_index(:streamers, [:path]))

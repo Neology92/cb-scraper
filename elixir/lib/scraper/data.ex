@@ -1,9 +1,17 @@
 defmodule Scraper.Data do
   alias Scraper.Repo
   alias Scraper.Data.Streamer
+  import Ecto.Query
 
   def get_streamer(path) do
     Repo.get_by(Streamer, path: path)
+  end
+
+  def get_streamer_to_update() do
+    Streamer
+    |> order_by(asc: :updated_at)
+    |> first()
+    |> Repo.one()
   end
 
   def list_streamers do
