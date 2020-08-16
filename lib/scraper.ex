@@ -28,6 +28,12 @@ defmodule Scraper do
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         {:error, "404 - page not found"}
 
+      {:ok, %HTTPoison.Response{status_code: 302}} ->
+        {:error, "302 - redirect"}
+
+      {:ok, %HTTPoison.Response{status_code: status_code}} ->
+        {:error, Integer.to_string(status_code)}
+
       {:error, %HTTPoison.Error{reason: reason}} ->
         {:error, reason}
     end

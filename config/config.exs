@@ -3,7 +3,7 @@ use Mix.Config
 config :scraper, Scraper.Repo,
   database: "scraper_repo",
   username: "postgres",
-  password: "postgres",
+  password: "1234",
   hostname: "localhost",
   log: false
 

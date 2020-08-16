@@ -95,7 +95,8 @@ defmodule Scraper.Worker do
 
     Enum.reduce(urls, acc, fn url, acc ->
       cond do
-        String.match?(url, ~r/t.co/) -> %{acc | twitter: url}
+        String.match?(url, ~r/\/t.co/) -> %{acc | twitter: url}
+        String.match?(url, ~r/\/www.t.co/) -> %{acc | twitter: url}
         String.match?(url, ~r/twitter.com/) -> %{acc | twitter: url}
         String.match?(url, ~r/instagram.com/) -> %{acc | instagram: url}
         String.match?(url, ~r/onlyfans.com/) -> %{acc | onlyfans: url}
