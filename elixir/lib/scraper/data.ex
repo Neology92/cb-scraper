@@ -23,7 +23,7 @@ defmodule Scraper.Data do
     |> Repo.insert()
   end
 
-  def update_streamer(streamer, params) do
+  def update_streamer(params, streamer) do
     streamer
     |> Streamer.changeset(params)
     |> Repo.update()

@@ -1,6 +1,8 @@
 defmodule Scraper.Worker do
   use GenServer
 
+  alias Scraper.Data
+
   # client
 
   def start_link(default) when is_list(default) do
@@ -47,7 +49,31 @@ defmodule Scraper.Worker do
   end
 
   def handle_cast(:contact, state) do
-    Scraper.get_external_links_from("")
+    streamer = Data.get_streamer_to_update()
+
+    Scraper.get_external_links_from(streamer.path)
+    |> create_params(streamer)
+    |> Data.update_streamer(streamer)
+
     {:noreply, state}
+  end
+
+  defp create_params(urls, streamer) do
+    acc = %{
+      twitter: streamer.twitter,
+      instagram: streamer.instagram,
+      onlyfans: streamer.onlyfans,
+      misc: streamer.misc
+    }
+
+    Enum.reduce(urls, acc, fn url, acc ->
+      cond do
+        String.match?(url, ~r/t.co/) -> %{acc | twitter: url}
+        String.match?(url, ~r/twitter.com/) -> %{acc | twitter: url}
+        String.match?(url, ~r/instagram.com/) -> %{acc | instagram: url}
+        String.match?(url, ~r/onlyfans.com/) -> %{acc | onlyfans: url}
+        true -> %{acc | misc: acc.misc <> ", " <> url}
+      end
+    end)
   end
 end
