@@ -32,22 +32,25 @@ defmodule Scraper do
 
   def get_external_links_from(path) do
     url = @base_url <> path
-    IO.puts("Getting contact info from: " <> url)
+    IO.puts("Getting contact info from: " <> url <> "...")
 
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        body
-        |> Floki.parse_document!()
-        |> Floki.find("a")
-        |> Floki.attribute("href")
-        |> Enum.filter(fn path -> String.match?(path, ~r/external_link/) end)
-        |> Enum.map(fn path -> decode(path) end)
+        res =
+          body
+          |> Floki.parse_document!()
+          |> Floki.find("a")
+          |> Floki.attribute("href")
+          |> Enum.filter(fn path -> String.match?(path, ~r/external_link/) end)
+          |> Enum.map(fn path -> decode(path) end)
+
+        {:ok, res}
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts("Not found")
+        {:error, "404 - page not found"}
 
       {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect(reason)
+        {:error, reason}
     end
   end
 

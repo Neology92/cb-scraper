@@ -45,15 +45,27 @@ defmodule Scraper.Worker do
       end
     end
 
+    IO.puts("Done collecting new streamers.")
+
     {:noreply, state}
   end
 
   def handle_cast(:contact, state) do
     streamer = Data.get_streamer_to_update()
 
-    Scraper.get_external_links_from(streamer.path)
-    |> create_params(streamer)
-    |> Data.update_streamer(streamer)
+    case Scraper.get_external_links_from(streamer.path) do
+      {:ok, urls} ->
+        urls
+        |> create_params(streamer)
+        |> Data.update_streamer(streamer)
+
+        IO.puts("Updated " <> streamer.path)
+
+      {:error, reason} ->
+        IO.warn("Something went wrong: " <> reason)
+    end
+
+    IO.puts("Done collecting contact detail.")
 
     {:noreply, state}
   end
