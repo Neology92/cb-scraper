@@ -3,27 +3,34 @@ defmodule Scraper.Worker do
 
   alias Scraper.Data
 
-  # client
+  # 5 minutes
+  @new_streamers_interval 5 * 60 * 1000
 
+  # 1 minute
+  @contact_detail_interval 60 * 1000
+
+  # Client
   def start_link(default) when is_list(default) do
     GenServer.start_link(__MODULE__, default, name: __MODULE__)
   end
 
-  def check_new_streamers() do
-    GenServer.cast(__MODULE__, :new_streamers)
-  end
-
-  def scrap_next_contact() do
-    GenServer.cast(__MODULE__, :contact)
-  end
-
-  # server
-
+  # Server
   def init(_) do
+    Process.send_after(self(), :new_streamers, 1000)
+    schedule_scraping_contact_detail()
+    schedule_collecting_streamers()
     {:ok, 1}
   end
 
-  def handle_cast(:new_streamers, page) do
+  defp schedule_collecting_streamers do
+    Process.send_after(self(), :new_streamers, @new_streamers_interval)
+  end
+
+  defp schedule_scraping_contact_detail do
+    Process.send_after(self(), :contact, @contact_detail_interval)
+  end
+
+  def handle_info(:new_streamers, page) do
     categories = [
       "/female-cams/",
       "/male-cams/",
@@ -32,26 +39,31 @@ defmodule Scraper.Worker do
     ]
 
     for category <- categories do
-      paths = Scraper.get_cams_paths_from(category <> "?page=" <> Integer.to_string(page))
+      case Scraper.get_cams_paths_from(category <> "?page=" <> Integer.to_string(page)) do
+        {:ok, paths} ->
+          for path <- paths do
+            case Scraper.Data.create_streamer(%{
+                   category: category,
+                   path: path
+                 }) do
+              {:ok, _} -> IO.puts("Added new streamer do DB: " <> path)
+              {:error, _} -> nil
+            end
+          end
 
-      for path <- paths do
-        case Scraper.Data.create_streamer(%{
-               category: category,
-               path: path
-             }) do
-          {:ok, _} -> IO.puts("Added new streamer do DB: " <> path)
-          {:error, _} -> nil
-        end
+        {:error, reason} ->
+          IO.warn("Something went wrong: " <> reason)
       end
     end
 
     IO.puts("Done collecting new streamers.")
 
-    page = if page > 100, do: 0, else: page + 1
+    page = if page > 70, do: 1, else: page + 1
+    schedule_collecting_streamers()
     {:noreply, page}
   end
 
-  def handle_cast(:contact, state) do
+  def handle_info(:contact, state) do
     streamer = Data.get_streamer_to_update()
 
     case Scraper.get_external_links_from(streamer.path) do
@@ -69,6 +81,7 @@ defmodule Scraper.Worker do
 
     IO.puts("Done collecting contact detail.")
 
+    schedule_scraping_contact_detail()
     {:noreply, state}
   end
 

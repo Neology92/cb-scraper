@@ -16,17 +16,20 @@ defmodule Scraper do
 
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        body
-        |> Floki.parse_document!()
-        |> Floki.find("#room_list > li")
-        |> Floki.find(".details > .title > a")
-        |> Floki.attribute("href")
+        paths =
+          body
+          |> Floki.parse_document!()
+          |> Floki.find("#room_list > li")
+          |> Floki.find(".details > .title > a")
+          |> Floki.attribute("href")
+
+        {:ok, paths}
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts("Not found")
+        {:error, "404 - page not found"}
 
       {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect(reason)
+        {:error, reason}
     end
   end
 
