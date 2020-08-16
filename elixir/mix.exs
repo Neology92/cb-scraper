@@ -22,8 +22,6 @@ defmodule Scraper.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:plug_cowboy, "~> 2.0"},
-      {:poison, "~> 3.1"},
       {:floki, "~> 0.27.0"},
       {:httpoison, "~> 1.6"},
       {:ecto_sql, "~> 3.0"},

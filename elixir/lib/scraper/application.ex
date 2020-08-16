@@ -8,11 +8,6 @@ defmodule Scraper.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      Plug.Cowboy.child_spec(
-        scheme: :http,
-        plug: Scraper.Router,
-        options: [port: 8085]
-      ),
       Scraper.Repo,
       Scraper.Worker
       # Starts a worker by calling: Scraper.Worker.start_link(arg)
