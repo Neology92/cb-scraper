@@ -8,12 +8,18 @@ Easy contact data collecting
   - username: <your_postgres_username>,
   - password: <your_postgres_password>,
 
-3. Go to app folder in terminal and run:
+4. Go to app folder in terminal and run:
 ```
 $ mix deps.get
 ```
 
-4. Start app
+5. Create and migrate db
+```
+$ mix ecto.create
+$ mix ecto.migrate
+```
+
+6. Start app
 ```
 $ iex -S mix
 ```
