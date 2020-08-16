@@ -20,10 +20,10 @@ defmodule Scraper.Worker do
   # server
 
   def init(_) do
-    {:ok, []}
+    {:ok, 1}
   end
 
-  def handle_cast(:new_streamers, state) do
+  def handle_cast(:new_streamers, page) do
     categories = [
       "/female-cams/",
       "/male-cams/",
@@ -32,7 +32,7 @@ defmodule Scraper.Worker do
     ]
 
     for category <- categories do
-      paths = Scraper.get_cams_paths_from(category)
+      paths = Scraper.get_cams_paths_from(category <> "?page=" <> Integer.to_string(page))
 
       for path <- paths do
         case Scraper.Data.create_streamer(%{
@@ -47,7 +47,8 @@ defmodule Scraper.Worker do
 
     IO.puts("Done collecting new streamers.")
 
-    {:noreply, state}
+    page = if page > 100, do: 0, else: page + 1
+    {:noreply, page}
   end
 
   def handle_cast(:contact, state) do
