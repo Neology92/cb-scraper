@@ -100,8 +100,14 @@ defmodule Scraper.Worker do
         String.match?(url, ~r/instagram.com/) -> %{acc | instagram: url}
         String.match?(url, ~r/onlyfans.com/) -> %{acc | onlyfans: url}
         Kernel.is_nil(acc.misc) -> %{acc | misc: url}
-        true -> %{acc | misc: acc.misc <> ", " <> url}
+        true -> %{acc | misc: update_misc(acc.misc, url)}
       end
     end)
+  end
+
+  defp update_misc(misc, url) do
+    (String.split(misc, ", ") ++ [url])
+    |> Enum.uniq()
+    |> Enum.join(", ")
   end
 end
