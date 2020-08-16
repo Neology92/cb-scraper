@@ -8,7 +8,7 @@ defmodule Scraper.Repo.Migrations.CreateStreamers do
       add :twitter, :string
       add :instagram, :string
       add :onlyfans, :string
-      add :misc, :string
+      add :misc, :text
 
       timestamps()
     end

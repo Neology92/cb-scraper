@@ -56,6 +56,7 @@ defmodule Scraper.Worker do
     case Scraper.get_external_links_from(streamer.path) do
       {:ok, urls} ->
         urls
+        |> IO.inspect()
         |> create_params(streamer)
         |> Data.update_streamer(streamer)
 
@@ -84,6 +85,7 @@ defmodule Scraper.Worker do
         String.match?(url, ~r/twitter.com/) -> %{acc | twitter: url}
         String.match?(url, ~r/instagram.com/) -> %{acc | instagram: url}
         String.match?(url, ~r/onlyfans.com/) -> %{acc | onlyfans: url}
+        Kernel.is_nil(acc.misc) -> %{acc | misc: url}
         true -> %{acc | misc: acc.misc <> ", " <> url}
       end
     end)
