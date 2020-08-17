@@ -77,6 +77,7 @@ defmodule Scraper.Worker do
 
       {:error, reason} ->
         IO.warn("Something went wrong: " <> reason)
+        Data.update_streamer(%{}, streamer)
     end
 
     IO.puts("Done collecting contact detail.")
