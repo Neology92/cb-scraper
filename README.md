@@ -1,5 +1,5 @@
 # CB Scraper
-Easy contact data collecting
+Easy contact data collecting on chaturbate streamers
 
 ## First steps
 
